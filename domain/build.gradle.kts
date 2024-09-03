@@ -3,11 +3,16 @@ plugins {
     id("org.jetbrains.kotlin.jvm")
 }
 
+kotlin {
+    jvmToolchain(8)
+}
+
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_7
-    targetCompatibility = JavaVersion.VERSION_1_7
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 dependencies {
-    implementation(project(":core"))
+    api("io.insert-koin:koin-core:3.4.2")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 }

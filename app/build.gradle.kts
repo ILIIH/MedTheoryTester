@@ -50,6 +50,14 @@ android {
 }
 
 dependencies {
+    implementation(project(":data"))
+    implementation(project(":domain"))
+    //
+    api("io.insert-koin:koin-core:3.4.2")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.2")
+    // Koin (Android)
+    implementation("io.insert-koin:koin-androidx-compose:3.4.5")
+
     implementation ("io.coil-kt:coil-compose:2.1.0")
     implementation ("io.coil-kt:coil-gif:2.1.0")
     implementation ("androidx.navigation:navigation-compose:2.7.1")
