@@ -6,12 +6,15 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.medtheorytester.viewModel.QuizViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun QuizScreen(
@@ -19,7 +22,9 @@ fun QuizScreen(
     options: List<String>,
     navController: NavHostController?
 ) {
+    val eventsViewModel = koinViewModel<QuizViewModel>()
     var selectedOption by remember { mutableStateOf<Int?>(null) }
+    val riddle by rememberSaveable { eventsViewModel.currentRiddle }
 
     Column(
         modifier = Modifier
@@ -29,20 +34,20 @@ fun QuizScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = question,
+            text = riddle?.question?:String(),
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.align(Alignment.Start)
                 .padding(bottom = 30.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
-        options.forEachIndexed { index, option ->
+        riddle?.answers?.forEachIndexed { index, option ->
             Box(
                 modifier = Modifier
                     .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
                 OptionItem(
-                    optionText = option,
+                    optionText = option.answer,
                     isSelected = selectedOption == index,
                     onClick = {
                         selectedOption = index
