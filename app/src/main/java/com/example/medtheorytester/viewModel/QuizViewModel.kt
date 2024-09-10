@@ -25,7 +25,7 @@ class QuizViewModel(
     }
     fun next(){
         index++;
-        if(_riddlesListState.value.size < index){
+        if(_riddlesListState.value.size > index){
             _currentRiddle.value = _riddlesListState.value[index];
         }
         else {
