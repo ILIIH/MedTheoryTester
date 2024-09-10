@@ -1,5 +1,6 @@
 package com.example.medtheorytester.ui.screen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,9 +11,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.medtheorytester.R
 import com.example.medtheorytester.viewModel.QuizViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -26,49 +29,69 @@ fun QuizScreen(
     var selectedOption by remember { mutableStateOf<Int?>(null) }
     val riddle by rememberSaveable { eventsViewModel.currentRiddle }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(16.dp)
     ) {
-        Text(
-            text = riddle?.question?:String(),
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.align(Alignment.Start)
-                .padding(bottom = 30.dp)
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        riddle?.answers?.forEachIndexed { index, option ->
-            Box(
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(end = 16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = riddle?.question ?: String(),
+                style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                OptionItem(
-                    optionText = option.answer,
-                    isSelected = selectedOption == index,
-                    onClick = {
-                        selectedOption = index
-                    }
-                )
-            }
+                    .align(Alignment.Start)
+                    .padding(bottom = 30.dp)
+            )
             Spacer(modifier = Modifier.height(16.dp))
+            riddle?.answers?.forEachIndexed { index, option ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    OptionItem(
+                        isTrue = option.isTrue,
+                        optionText = option.answer,
+                        isSelected = selectedOption == index,
+                        onClick = {
+                            selectedOption = index
+                        }
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
         }
-    }
 
+        Image(
+            painter = painterResource(id = R.drawable.arrow_righ),
+            contentDescription = "Quiz Image",
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .size(100.dp)
+                .clickable {
+                    eventsViewModel.next()
+                }
+        )
+    }
 }
+
 
 @Composable
 fun OptionItem(
+    isTrue:Boolean,
     optionText: String,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
     Surface(
         shape = MaterialTheme.shapes.medium,
-        color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+        color = if (isSelected&& isTrue) MaterialTheme.colorScheme.primary else if(isSelected && !isTrue) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.surface,
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
