@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,7 +26,7 @@ fun QuizScreen(
 ) {
     val eventsViewModel = koinViewModel<QuizViewModel>()
     var selectedOption by remember { mutableStateOf<Int?>(null) }
-    val riddle by rememberSaveable { eventsViewModel.currentRiddle }
+    val riddle = eventsViewModel.currentRiddle
 
     Box(
         modifier = Modifier
@@ -42,14 +41,14 @@ fun QuizScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = riddle?.question ?: String(),
+                text = riddle.value?.question ?: String(),
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier
                     .align(Alignment.Start)
                     .padding(bottom = 30.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
-            riddle?.answers?.forEachIndexed { index, option ->
+            riddle.value?.answers?.forEachIndexed { index, option ->
                 Box(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -60,7 +59,7 @@ fun QuizScreen(
                         optionText = option.answer,
                         isSelected = selectedOption == index,
                         onClick = {
-                            selectedOption = index
+                            if (selectedOption == null) selectedOption = index
                         }
                     )
                 }
@@ -75,12 +74,12 @@ fun QuizScreen(
                 .align(Alignment.BottomEnd)
                 .size(100.dp)
                 .clickable {
+                    selectedOption = null
                     eventsViewModel.next()
                 }
         )
     }
 }
-
 
 @Composable
 fun OptionItem(
@@ -91,13 +90,13 @@ fun OptionItem(
 ) {
     Surface(
         shape = MaterialTheme.shapes.medium,
-        color = if (isSelected&& isTrue) MaterialTheme.colorScheme.primary else if(isSelected && !isTrue) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.surface,
+        color = if (isSelected&& isTrue) Color.Green else if(isSelected && !isTrue) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.surface,
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
             .border(
                 width = 2.dp,
-                color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Gray,
+                color = Color.Gray,
                 shape = RoundedCornerShape(8.dp)
             )
     ) {
