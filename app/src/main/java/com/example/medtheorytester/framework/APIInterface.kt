@@ -6,9 +6,8 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface APIInterface {
-    @GET("/getRiddles")
-    suspend fun doGetListResources():List<Riddle>
-
+    @GET("gerRiddles")
+    suspend fun getRiddles():List<Riddle>
     @POST("/addRiddle")
     suspend fun createUser(@Body riddle: Riddle)
 

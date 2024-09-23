@@ -4,15 +4,19 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.medtheorytester.R
 import com.example.medtheorytester.viewModel.QuizViewModel
@@ -36,13 +40,15 @@ fun QuizScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(end = 16.dp),
+                .padding(end = 16.dp)
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = riddle.value?.question ?: String(),
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleLarge.copy(fontSize = 15.sp),
+                textAlign = TextAlign.Justify,
                 modifier = Modifier
                     .align(Alignment.Start)
                     .padding(bottom = 30.dp)
@@ -88,6 +94,7 @@ fun OptionItem(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
+
     Surface(
         shape = MaterialTheme.shapes.medium,
         color = if (isSelected&& isTrue) Color.Green else if(isSelected && !isTrue) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.surface,
