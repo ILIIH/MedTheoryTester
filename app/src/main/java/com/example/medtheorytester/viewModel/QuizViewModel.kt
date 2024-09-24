@@ -8,6 +8,7 @@ import com.example.domain.model.Riddle
 import com.example.domain.useCase.GetAllRiddlesUseCase
 import kotlinx.coroutines.launch
 
+const val  BATCH_SIZE = 5;
 class QuizViewModel(
     private val getAllRiddlesUseCase: GetAllRiddlesUseCase
 ) : ViewModel() {
@@ -24,21 +25,15 @@ class QuizViewModel(
         fetchRiddles()
     }
     fun next(){
-
         index++;
-        if(_riddlesListState.value.size > index){
+        if(index%BATCH_SIZE != 0){
             _currentRiddle.value = _riddlesListState.value[index];
         }
         else {
-            viewModelScope.launch {
-                _isLoaded.value = true
-                _riddlesListState.value = getAllRiddlesUseCase.execute(index)
-                _currentRiddle.value = _riddlesListState.value.first();
-                _isLoaded.value = false
-            }
+            fetchRiddles(index)
         }
     }
-    fun fetchRiddles() {
+    fun fetchRiddles(index:Int  = 0 ) {
         viewModelScope.launch {
             _isLoaded.value = true
             _riddlesListState.value = getAllRiddlesUseCase.execute(0)
