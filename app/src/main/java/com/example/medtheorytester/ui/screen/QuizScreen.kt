@@ -30,6 +30,7 @@ fun QuizScreen(
 ) {
     val eventsViewModel = koinViewModel<QuizViewModel>()
     var selectedOption by remember { mutableStateOf<Int?>(null) }
+    var isOptionWrong by remember { mutableStateOf<Boolean>(false) }
     val riddle = eventsViewModel.currentRiddle
 
     Box(
@@ -63,9 +64,11 @@ fun QuizScreen(
                     OptionItem(
                         isTrue = option.isTrue,
                         optionText = option.answer,
-                        isSelected = selectedOption == index,
+                        isSelected = selectedOption ,
+                        index = index,
                         onClick = {
                             if (selectedOption == null) selectedOption = index
+                            if (!option.isTrue) isOptionWrong = true
                         }
                     )
                 }
@@ -91,13 +94,14 @@ fun QuizScreen(
 fun OptionItem(
     isTrue:Boolean,
     optionText: String,
-    isSelected: Boolean,
+    isSelected: Int?,
+    index: Int,
     onClick: () -> Unit
 ) {
 
     Surface(
         shape = MaterialTheme.shapes.medium,
-        color = if (isSelected&& isTrue) Color.Green else if(isSelected && !isTrue) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.surface,
+        color = if (isSelected != null && isTrue) Color.Green else if(isSelected == index && !isTrue) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.surface,
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
