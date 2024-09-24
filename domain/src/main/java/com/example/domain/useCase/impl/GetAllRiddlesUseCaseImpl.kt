@@ -7,5 +7,5 @@ import com.example.domain.useCase.GetAllRiddlesUseCase
 internal class GetAllRiddlesUseCaseImpl(
     private val riddleRepository: RiddleRepository
 ) : GetAllRiddlesUseCase {
-    override suspend fun execute(): List<Riddle> = riddleRepository.getAllRiddles()
+    override suspend fun execute(startFrom: Int): List<Riddle> = riddleRepository.getAllRiddles(startFrom)
 }

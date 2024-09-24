@@ -24,18 +24,24 @@ class QuizViewModel(
         fetchRiddles()
     }
     fun next(){
+
         index++;
         if(_riddlesListState.value.size > index){
             _currentRiddle.value = _riddlesListState.value[index];
         }
         else {
-
+            viewModelScope.launch {
+                _isLoaded.value = true
+                _riddlesListState.value = getAllRiddlesUseCase.execute(index)
+                _currentRiddle.value = _riddlesListState.value.first();
+                _isLoaded.value = false
+            }
         }
     }
     fun fetchRiddles() {
         viewModelScope.launch {
             _isLoaded.value = true
-            _riddlesListState.value = getAllRiddlesUseCase.execute()
+            _riddlesListState.value = getAllRiddlesUseCase.execute(0)
             _currentRiddle.value = _riddlesListState.value.first();
             _isLoaded.value = false
         }
