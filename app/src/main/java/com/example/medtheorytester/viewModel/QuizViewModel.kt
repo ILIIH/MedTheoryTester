@@ -7,7 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.model.Riddle
 import com.example.domain.useCase.GetAllRiddlesUseCase
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
 
 const val  BATCH_SIZE = 4;
 class QuizViewModel(
@@ -18,12 +20,12 @@ class QuizViewModel(
     private val _currentRiddle = mutableStateOf<Riddle?>(null)
     val currentRiddle: State<Riddle?> get() = _currentRiddle
 
-    private val _isLoaded = mutableStateOf(false)
+    private val _isLoading = mutableStateOf(false)
 
     private var index = 0;
     private var batch_limit = 0;
 
-    val isLoaded: State<Boolean> get() = _isLoaded
+    val isLoading: State<Boolean> get() = _isLoading
 
     init {
         fetchRiddles(batch_limit)
@@ -39,12 +41,12 @@ class QuizViewModel(
             index = 0
         }
     }
-    fun fetchRiddles(index:Int) {
+    private fun fetchRiddles(index:Int) {
         viewModelScope.launch {
-            _isLoaded.value = true
+            _isLoading.value = true
             _riddlesListState.value = getAllRiddlesUseCase.execute(index)
             _currentRiddle.value = _riddlesListState.value.first();
-            _isLoaded.value = false
+            _isLoading.value = false
         }
     }
 }

@@ -31,63 +31,66 @@ fun QuizScreen(
     val eventsViewModel = koinViewModel<QuizViewModel>()
     var selectedOption by remember { mutableStateOf<Int?>(null) }
     var isOptionWrong by remember { mutableStateOf<Boolean>(false) }
-    val riddle = eventsViewModel.currentRiddle
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Column(
+    val riddle = eventsViewModel.currentRiddle
+    if(!eventsViewModel.isLoading.value){
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(end = 16.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(16.dp)
         ) {
-            Text(
-                text = riddle.value?.question ?: String(),
-                style = MaterialTheme.typography.titleLarge.copy(fontSize = 15.sp),
-                textAlign = TextAlign.Justify,
+            Column(
                 modifier = Modifier
-                    .align(Alignment.Start)
-                    .padding(bottom = 30.dp)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            riddle.value?.answers?.forEachIndexed { index, option ->
-                Box(
+                    .fillMaxSize()
+                    .padding(bottom = 90.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = riddle.value?.question ?: String(),
+                    style = MaterialTheme.typography.titleLarge.copy(fontSize = 15.sp),
+                    textAlign = TextAlign.Justify,
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    OptionItem(
-                        isTrue = option.isTrue,
-                        optionText = option.answer,
-                        isSelected = selectedOption ,
-                        index = index,
-                        onClick = {
-                            if (selectedOption == null) selectedOption = index
-                            if (!option.isTrue) isOptionWrong = true
-                        }
-                    )
-                }
+                        .align(Alignment.Start)
+                        .padding(bottom = 30.dp)
+                )
                 Spacer(modifier = Modifier.height(16.dp))
-            }
-        }
-
-        Image(
-            painter = painterResource(id = R.drawable.arrow_righ),
-            contentDescription = "Quiz Image",
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .size(100.dp)
-                .clickable {
-                    selectedOption = null
-                    eventsViewModel.next()
+                riddle.value?.answers?.forEachIndexed { index, option ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        OptionItem(
+                            isTrue = option.isTrue,
+                            optionText = option.answer,
+                            isSelected = selectedOption ,
+                            index = index,
+                            onClick = {
+                                if (selectedOption == null) selectedOption = index
+                                if (!option.isTrue) isOptionWrong = true
+                            }
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
-        )
+            }
+
+            Image(
+                painter = painterResource(id = R.drawable.arrow_righ),
+                contentDescription = "Quiz Image",
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .size(90.dp)
+                    .clickable {
+                        selectedOption = null
+                        eventsViewModel.next()
+                    }
+            )
+        }
     }
+
 }
 
 @Composable
