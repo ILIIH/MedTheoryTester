@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.medtheorytester.R
 import com.example.medtheorytester.viewModel.QuizViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -26,14 +27,17 @@ import org.koin.androidx.compose.koinViewModel
 fun QuizScreen(
     question: String,
     options: List<String>,
-    navController: NavHostController?
+    navController: NavHostController
 ) {
     val eventsViewModel = koinViewModel<QuizViewModel>()
     var selectedOption by remember { mutableStateOf<Int?>(null) }
     var isOptionWrong by remember { mutableStateOf<Boolean>(false) }
 
     val riddle = eventsViewModel.currentRiddle
-    if(!eventsViewModel.isLoading.value){
+    if(eventsViewModel.isLoading.value){
+        SplashScreen(null)
+    }
+    else{
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -128,10 +132,11 @@ fun OptionItem(
 fun PreviewQuizScreen() {
     val question = "What is the capital of France?"
     val options = listOf("Paris", "London", "Berlin", "Madrid")
+    val navController = rememberNavController()
 
     QuizScreen(
         question = question,
         options = options,
-        null
+        navController =navController
     )
 }

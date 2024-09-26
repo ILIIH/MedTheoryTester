@@ -44,6 +44,7 @@ class QuizViewModel(
     private fun fetchRiddles(index:Int) {
         viewModelScope.launch {
             _isLoading.value = true
+            delay(20000)
             _riddlesListState.value = getAllRiddlesUseCase.execute(index)
             _currentRiddle.value = _riddlesListState.value.first();
             _isLoading.value = false
