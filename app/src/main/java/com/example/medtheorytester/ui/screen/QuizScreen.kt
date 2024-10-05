@@ -1,5 +1,6 @@
 package com.example.medtheorytester.ui.screen
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -11,8 +12,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -20,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.medtheorytester.R
+import com.example.medtheorytester.ui.theme.primaryColor
 import com.example.medtheorytester.viewModel.QuizViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -81,17 +87,38 @@ fun QuizScreen(
                 }
             }
 
-            Image(
-                painter = painterResource(id = R.drawable.arrow_righ),
-                contentDescription = "Quiz Image",
+            Box(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .size(90.dp)
+                    .fillMaxWidth()
                     .clickable {
                         selectedOption = null
                         eventsViewModel.next()
                     }
-            )
+                    .drawBehind {
+                        val strokeWidth = 1.dp.toPx()
+                        val topLineStart = Offset(-60f, 0f)
+                        val topLineEnd = Offset(size.width + 60f, strokeWidth / 2)
+
+                        drawLine(
+                            color = Color.LightGray,
+                            start = topLineStart,
+                            end = topLineEnd,
+                            strokeWidth = strokeWidth,
+                            cap = StrokeCap.Square,
+                        )
+                    },
+                contentAlignment = Alignment.Center,
+                ){
+                Text(
+                    modifier = Modifier.padding(top = 10.dp),
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
+                    text = "Continue",
+                    color = primaryColor
+                    )
+            }
         }
     }
 
@@ -121,7 +148,7 @@ fun OptionItem(
         Text(
             text = optionText,
             style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
         )
     }
 
