@@ -2,6 +2,7 @@ package com.example.medtheorytester.viewModel
 
 import android.util.Log
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,7 +23,9 @@ class QuizViewModel(
 
     private val _isLoading = mutableStateOf(false)
 
-    private var index = 0;
+    private val _index = mutableIntStateOf(0)
+    val index: Int get() = _index.intValue + batch_limit
+
     private var batch_limit = 0;
 
     val isLoading: State<Boolean> get() = _isLoading
@@ -31,20 +34,19 @@ class QuizViewModel(
         fetchRiddles(batch_limit)
     }
     fun next(){
-        index++;
-        if(_riddlesListState.value.size > index){
-            _currentRiddle.value = _riddlesListState.value[index];
+        _index.value = _index.value + 1;
+        if(_riddlesListState.value.size > _index.value){
+            _currentRiddle.value = _riddlesListState.value[_index.value];
         }
         else {
             fetchRiddles(batch_limit)
             batch_limit += BATCH_SIZE
-            index = 0
+            _index.value = 0
         }
     }
     private fun fetchRiddles(index:Int) {
         viewModelScope.launch {
             _isLoading.value = true
-            delay(20000)
             _riddlesListState.value = getAllRiddlesUseCase.execute(index)
             _currentRiddle.value = _riddlesListState.value.first();
             _isLoading.value = false

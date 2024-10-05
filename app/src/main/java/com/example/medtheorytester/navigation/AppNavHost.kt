@@ -24,9 +24,7 @@ fun AppNavHost(
                 SplashScreen(navController)
             }
             composable(NavigationItem.Quiz.route){
-                val question = "What is the capital of France?"
-                val options = listOf("Paris", "London", "Berlin", "Madrid")
-                QuizScreen(question, options, navController)
+                QuizScreen(navController)
             }
             composable(NavigationItem.Menu.route){
                 MenuScreen(navController)
